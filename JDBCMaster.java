@@ -10,6 +10,9 @@ public class JDBCMaster {
     static UserInput userInput =new UserInput();
     public static void main(String[] args) {
         DatabaseProperties databaseProperties = new DatabaseProperties();
+
+        // Encrypt the password
+        //String encryptedPassword = AESUtil.encrypt(password);
         try {
             //1. Load the Driver
             Class.forName("org.postgresql.Driver");
@@ -42,7 +45,7 @@ public class JDBCMaster {
     }
     //T0 CREATE TABLE
     public static void createTables(Connection conn) throws SQLException{
-        String createUserTable = "CREATE TABLE IF NOT EXISTS users (id serial primary key, username varchar(25), password varchar(25))";
+        String createUserTable = "CREATE TABLE IF NOT EXISTS users (id serial primary key, username varchar(25), password varchar(100))";
         String createProductTable = "CREATE TABLE IF NOT EXISTS product (id serial primary key, name varchar(25), price NUMERIC)";
             st = con.createStatement();
             st.executeUpdate(createUserTable);
@@ -50,17 +53,17 @@ public class JDBCMaster {
             System.out.println("Tables created (if not existed).");
     }
     //TO INSERT DATA INTO USERS
-    public static void insertUser(Connection conn) throws SQLException{
+    public static void insertUser(Connection conn) throws Exception {
         String sqlUserInsert = "INSERT INTO USERS(username,password) values(?,?)";
         pst = con.prepareStatement(sqlUserInsert);
         userInput.inputUser();
         pst.setString(1,userInput.getUsername());
-        pst.setString(2,userInput.getPassword());
+        pst.setString(2,AESUtil.encrypt(userInput.getPassword()));
         int rows = pst.executeUpdate();
         System.out.println("User Inserted: "+(rows ==1));
     }
     //TO INSERT DATA INTO PRODUCT
-    public static void insertProduct(Connection conn) throws SQLException{
+    public static void insertProduct(Connection conn) throws Exception {
         String sqlProductInsert = "INSERT INTO product(name,price) values(?,?)";
         pst = con.prepareStatement(sqlProductInsert);
         userInput.inputProduct();
@@ -70,12 +73,12 @@ public class JDBCMaster {
         System.out.println("Product Inserted: "+(rows ==1));
     }
     //FETCH DATA FROM USERS
-    public static void fetchUsers(Connection conn) throws SQLException{
+    public static void fetchUsers(Connection con) throws Exception {
         String fetchUser = "SELECT * FROM USERS";
         st = con.createStatement();
         rs = st.executeQuery(fetchUser);
         while(rs.next()){
-            System.out.println(rs.getInt("id")+": "+rs.getString("username")+": "+rs.getString("password"));
+            System.out.println(rs.getInt("id")+": "+rs.getString("username")+": "+AESUtil.decrypt(rs.getString("password")));
         }
     }
     //FETCH DATA FROM PRODUCT
