@@ -1,25 +1,22 @@
 package mahmud.com;
 
 import java.sql.*;
-import java.util.Scanner;
 
-public class Lab1 {
+public class Lab5 {
     public static void main(String[] args) {
         Connection con = null;
         Statement st = null;
         ResultSet rs = null;
         PreparedStatement pst = null;
-        String jdbcURL = "jdbc:postgresql://localhost:5432/javaDB";
-        String dbUser = "postgres";
-        String dbPassword = "admin";
-
         UserInput userInput = new UserInput();
+        DatabaseProperties databaseProperties = new DatabaseProperties();
 
         try {
             //1. Load the Driver
             Class.forName("org.postgresql.Driver");
             //2. Establish the Connection
-            con=DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
+            databaseProperties.inputDB();
+            con=DriverManager.getConnection(databaseProperties.jdbcURL,databaseProperties.dbUser,databaseProperties.dbPassword);
             //3. Prepare the SQL Statement
             String createTable = "CREATE TABLE IF NOT EXISTS users(username varchar(25), password varchar(25))";
             String insertData ="INSERT INTO USERS VaLUES(?,?)";
@@ -52,6 +49,8 @@ public class Lab1 {
                     rs.close();
                 if(con != null)
                     con.close();
+                if(pst != null)
+                    pst.close();
             }catch(Exception e) {
                 e.printStackTrace();
             }
