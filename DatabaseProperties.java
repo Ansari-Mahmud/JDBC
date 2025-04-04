@@ -9,9 +9,9 @@ public class DatabaseProperties {
     Scanner sc = new Scanner(System.in);
 
     public void inputDB() {
-        System.out.println("Enter your Database Name: ");
+        System.out.println("Enter your Database UserName: ");
         dbUser = sc.nextLine();
-        System.out.println("Enter your password: ");
+        System.out.println("Enter your Database password: ");
         dbPassword = sc.nextLine();
     }
     public String getDBUser() {
