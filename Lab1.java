@@ -11,10 +11,9 @@ public class Lab1 {
         PreparedStatement pst = null;
         String jdbcURL = "jdbc:postgresql://localhost:5432/javaDB";
         String dbUser = "postgres";
-        String dbPassword = "admin";
-
         Scanner sc = new Scanner(System.in);
-
+        System.out.println("Enter the database Password: ");
+        String dbPassword = sc.nextLine();
         try {
             //1. Load the Driver
             Class.forName("org.postgresql.Driver");
@@ -22,7 +21,9 @@ public class Lab1 {
             con=DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
             //3. Prepare the SQL Statement
             String createTable = "CREATE TABLE IF NOT EXISTS users(username varchar(25), password varchar(25))";
+            System.out.println("Enter the Username: ");
             String name = sc.nextLine();
+            System.out.println("Enter the Password: ");
             String password = sc.nextLine();
             String insertData ="INSERT INTO USERS VaLUES(?,?)";
             //4. Create the JDBC Statement
